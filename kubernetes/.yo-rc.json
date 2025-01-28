@@ -1,0 +1,20 @@
+{
+  "generator-jhipster": {
+    "appsFolders": ["itstrat"],
+    "dbRandomPassword": "60e3496f2e59688d76f0b02f6ed2115d3bfcd28d4e33ed5cc1b2e3de8897",
+    "deploymentApplicationType": "monolith",
+    "directoryPath": "../../",
+    "dockerPushCommand": "docker push",
+    "dockerRepositoryName": "",
+    "ingressDomain": null,
+    "ingressType": null,
+    "jhipsterVersion": "8.7.1",
+    "jwtSecretKey": "OTA1OWMyMWYxYjU4OTNiMDc0ZWUzMGY0MDM2YmE0OWNlNDNmZWQwMGQ2ZTcxNzcyMmE2ZWExNzRhNDkzMmM3YjBiZTU3NmJjZGFmNzdlZGUyMTBlZmY5ZDRmMTc3MTA5MzllYQ==",
+    "kubernetesNamespace": "default",
+    "kubernetesServiceType": "LoadBalancer",
+    "kubernetesStorageClassName": null,
+    "kubernetesUseDynamicStorage": false,
+    "monitoring": "no",
+    "serviceDiscoveryType": "consul"
+  }
+}
