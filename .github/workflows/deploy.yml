@@ -80,7 +80,10 @@ jobs:
           kubectl cluster-info
 
       - name: Deploy Applications Using JHipster Script
-        run: bash kubectl-apply.sh -f
+        run: |
+          cd kubernetes
+          bash kubectl-apply.sh -f
+
 
       - name: Verify Deployment
         run: |
