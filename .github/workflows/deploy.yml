@@ -54,11 +54,11 @@ jobs:
       - name: Push Docker Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: harish  # Update to match your ECR repo
+          ECR_REPOSITORY: itstrat  # Update to match your ECR repo
           IMAGE_TAG: latest
         run: |
-          docker tag itstrat 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish/itstrat:latest
-          docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish/itstrat:latest
+          docker tag itstrat 637423430820.dkr.ecr.us-east-1.amazonaws.com/itstrat:latest
+          docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/itstrat:latest
 
       - name: Set Up kubectl
         run: |
