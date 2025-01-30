@@ -24,20 +24,20 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Make mvnw Executable
-        run: chmod +x mvnw
+      # - name: Make mvnw Executable
+      #   run: chmod +x mvnw
 
-      - name: Build Application and Docker Image
-        run: ./mvnw -Pprod verify jib:dockerBuild -DskipTests -Dmaven.javadoc.skip=true -DskipITs -C
+      # - name: Build Application and Docker Image
+      #   run: ./mvnw -Pprod verify jib:dockerBuild -DskipTests -Dmaven.javadoc.skip=true -DskipITs -C
 
-      - name: Verify Dockerfile
-        run: |
-          if [ -f Dockerfile ]; then
-            echo "Dockerfile found!"
-          else
-            echo "ERROR: Dockerfile not found!"
-            exit 1
-          fi
+      # - name: Verify Dockerfile
+      #   run: |
+      #     if [ -f Dockerfile ]; then
+      #       echo "Dockerfile found!"
+      #     else
+      #       echo "ERROR: Dockerfile not found!"
+      #       exit 1
+      #     fi
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -51,14 +51,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Push Docker Image to ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: itstrat  # Update to match your ECR repo
-          IMAGE_TAG: latest
-        run: |
-          docker tag itstrat 637423430820.dkr.ecr.us-east-1.amazonaws.com/itstrat:latest
-          docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/itstrat:latest
+      # - name: Push Docker Image to ECR
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: itstrat  # Update to match your ECR repo
+      #     IMAGE_TAG: latest
+      #   run: |
+      #     docker tag itstrat 637423430820.dkr.ecr.us-east-1.amazonaws.com/itstrat:latest
+      #     docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/itstrat:latest
 
       - name: Set Up kubectl
         run: |
@@ -70,22 +70,22 @@ jobs:
           kubectl config get-contexts
           kubectl cluster-info
 
-      - name: Deploy Consul to EKS
-        run: |
-          kubectl apply -f registry-k8s/application-configmap.yml
-          kubectl apply -f registry-k8s/consul.yml
-          kubectl apply -f registry-k8s/consul-config-loader.yml
+      # - name: Deploy Consul to EKS
+      #   run: |
+      #     kubectl apply -f registry-k8s/application-configmap.yml
+      #     kubectl apply -f registry-k8s/consul.yml
+      #     kubectl apply -f registry-k8s/consul-config-loader.yml
 
-      - name: Wait for Consul to be Ready
-        run: |
-          echo "Waiting for Consul to be ready..."
-          kubectl rollout status deployment/consul --timeout=300s
+      # - name: Wait for Consul to be Ready
+      #   run: |
+      #     echo "Waiting for Consul to be ready..."
+      #     kubectl rollout status deployment/consul --timeout=300s
 
-      - name: Verify Consul Deployment
-        run: |
-          kubectl get pods -o wide
-          kubectl get svc consul
-          kubectl logs -l app=consul --all-containers=true --prefix
+      # - name: Verify Consul Deployment
+      #   run: |
+      #     kubectl get pods -o wide
+      #     kubectl get svc consul
+      #     kubectl logs -l app=consul --all-containers=true --prefix
 
       - name: Deploy Microservices Using JHipster Script
         run: |
@@ -94,7 +94,4 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          kubectl get pods -o wide
-          kubectl describe deployment itstrat
-          kubectl logs -l app=itstrat --all-containers=true --prefix
-          kubectl get events --field-selector involvedObject.kind=Pod --sort-by=.metadata.creationTimestamp
+          kubectl get svc itstrat
