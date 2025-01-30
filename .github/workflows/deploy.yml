@@ -57,8 +57,8 @@ jobs:
           ECR_REPOSITORY: harish  # Update to match your ECR repo
           IMAGE_TAG: latest
         run: |
-          docker tag microfirst 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish:latest/microfirst
-          docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish:latest/microfirst
+          docker tag itstrat 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish/itstrat:latest
+          docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish/itstrat:latest
 
       - name: Set Up kubectl
         run: |
@@ -95,6 +95,6 @@ jobs:
       - name: Verify Deployment
         run: |
           kubectl get pods -o wide
-          kubectl describe deployment microfirst
-          kubectl logs -l app=microfirst --all-containers=true --prefix
+          kubectl describe deployment itstrat
+          kubectl logs -l app=itstrat --all-containers=true --prefix
           kubectl get events --field-selector involvedObject.kind=Pod --sort-by=.metadata.creationTimestamp
