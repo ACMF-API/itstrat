@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     app: itstrat
-  type: LoadBalancer
+  type: NodePort
   ports:
     - name: http
       port: 8080

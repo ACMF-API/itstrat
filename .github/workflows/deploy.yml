@@ -24,11 +24,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # - name: Make mvnw Executable
-      #   run: chmod +x mvnw
+      - name: Make mvnw Executable
+        run: chmod +x mvnw
 
-      # - name: Build Application and Docker Image
-      #   run: ./mvnw -ntp -T 1C -Pprod verify jib:dockerBuild -DskipTests -Dmaven.javadoc.skip=true -DskipITs -C
+      - name: Build Application and Docker Image
+        run: ./mvnw -Pprod verify jib:dockerBuild -DskipTests -Dmaven.javadoc.skip=true -DskipITs -C
 
       - name: Verify Dockerfile
         run: |
@@ -51,23 +51,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # - name: Push Docker Image to ECR
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #   run: |
-      #     docker tag itstrat:latest $ECR_REGISTRY/itstrat:latest
-      #     docker push $ECR_REGISTRY/itstrat:latest
-
-      # - name: Build and Push Docker Images
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     ECR_REPOSITORY: harish  # Update to match your ECR repo
-      #     IMAGE_TAG: latest
-      #   run: |
-      #     echo "Building Docker image..."
-      #     docker build -t 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish:latest .
-      #     echo "Pushing Docker image..."
-      #     docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish:latest
+      - name: Push Docker Image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: harish  # Update to match your ECR repo
+          IMAGE_TAG: latest
+        run: |
+          docker tag microfirst 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish:latest/microfirst
+          docker push 637423430820.dkr.ecr.us-east-1.amazonaws.com/harish:latest/microfirst
 
       - name: Set Up kubectl
         run: |
@@ -79,15 +70,31 @@ jobs:
           kubectl config get-contexts
           kubectl cluster-info
 
-      - name: Deploy Applications Using JHipster Script
+      - name: Deploy Consul to EKS
+        run: |
+          kubectl apply -f registry-k8s/application-configmap.yml
+          kubectl apply -f registry-k8s/consul.yml
+          kubectl apply -f registry-k8s/consul-config-loader.yml
+
+      - name: Wait for Consul to be Ready
+        run: |
+          echo "Waiting for Consul to be ready..."
+          kubectl rollout status deployment/consul --timeout=300s
+
+      - name: Verify Consul Deployment
+        run: |
+          kubectl get pods -o wide
+          kubectl get svc consul
+          kubectl logs -l app=consul --all-containers=true --prefix
+
+      - name: Deploy Microservices Using JHipster Script
         run: |
           cd kubernetes
           bash kubectl-apply.sh -f
 
-
       - name: Verify Deployment
         run: |
           kubectl get pods -o wide
-          kubectl describe deployment itstrat
-          kubectl logs -l app=itstrat --all-containers=true --prefix
+          kubectl describe deployment microfirst
+          kubectl logs -l app=microfirst --all-containers=true --prefix
           kubectl get events --field-selector involvedObject.kind=Pod --sort-by=.metadata.creationTimestamp
